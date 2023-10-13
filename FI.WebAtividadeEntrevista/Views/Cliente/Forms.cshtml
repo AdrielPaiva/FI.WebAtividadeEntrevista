@@ -81,7 +81,7 @@
     <div class="row">
         <div class="col-md-12">
             <div class="form-group">
-                <button type="button" class="btn btn-primary" id="btnBeneficiarios">Beneficiários</button>
+                <button type="button" class="btn btn-default" id="btnBeneficiarios" data-toggle="modal" data-target="#modalBeneficiarios">Beneficiários</button>
             </div>
         </div>
     </div>
@@ -94,26 +94,53 @@
             </div>
         </div>
     </div>
-
-
 </form>
 
 <div class="modal fade" id="modalBeneficiarios" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Beneficiários</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title">Beneficiários</h4>
             </div>
             <div class="modal-body">
-                <!-- Coloque o conteúdo do formulário de beneficiários aqui -->
-                <!-- Você pode criar um formulário separado ou usar uma PartialView para o formulário de beneficiários -->
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
-                <button type="button" class="btn btn-primary">Salvar Beneficiário</button>
+                <form id="formBeneficiario">
+                    <div class="row">
+                        <div class="col-md-5">
+                            <div class="form-group">
+                                <label for="CPF">CPF:</label>
+                                <input required="required" type="text" class="form-control" id="BeneficiarioCPF" name="BeneficiarioCPF" placeholder="Ex.: 010.011.111-00" maxlength="14">
+                            </div>
+                        </div>
+                        <div class="col-md-5">
+                            <div class="form-group">
+                                <label for="Nome">Nome:</label>
+                                <input required="required" type="text" class="form-control" id="BeneficiarioNome" name="BeneficiarioNome" placeholder="Ex.: João" maxlength="50">
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="form-group">
+                                <button style="margin-top: 25px;" class="btn btn-success" type="submit" id="IncluirBeneficiario">Incluir</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <table id="TabelaBeneficiarios" class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>CPF</th>
+                                        <th>Nome</th>
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
             </div>
         </div>
     </div>

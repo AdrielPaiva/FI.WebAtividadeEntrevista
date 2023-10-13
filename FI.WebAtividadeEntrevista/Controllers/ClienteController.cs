@@ -64,7 +64,8 @@ namespace WebAtividadeEntrevista.Controllers
                         Nacionalidade = model.Nacionalidade,
                         Nome = model.Nome,
                         Sobrenome = model.Sobrenome,
-                        Telefone = model.Telefone
+                        Telefone = model.Telefone,
+                        Beneficiarios = model.Beneficiarios
                     });
 
 
@@ -121,7 +122,8 @@ namespace WebAtividadeEntrevista.Controllers
                     Nacionalidade = model.Nacionalidade,
                     Nome = model.Nome,
                     Sobrenome = model.Sobrenome,
-                    Telefone = model.Telefone
+                    Telefone = model.Telefone,
+                    Beneficiarios = model.Beneficiarios
                 });
                                
                 return Json("Cadastro alterado com sucesso");
@@ -134,6 +136,7 @@ namespace WebAtividadeEntrevista.Controllers
             BoCliente bo = new BoCliente();
             Cliente cliente = bo.Consultar(id);
             Models.ClienteModel model = null;
+            BoBeneficiario boBeneficiario = new BoBeneficiario();
 
             if (cliente != null)
             {
@@ -149,10 +152,15 @@ namespace WebAtividadeEntrevista.Controllers
                     Nacionalidade = cliente.Nacionalidade,
                     Nome = cliente.Nome,
                     Sobrenome = cliente.Sobrenome,
-                    Telefone = cliente.Telefone
+                    Telefone = cliente.Telefone,
+                    Beneficiarios = cliente.Beneficiarios
                 };
 
-            
+                List<Beneficiario> beneficiarios = boBeneficiario.ListarBeneficiariosCliente(cliente.Id);
+                if (beneficiarios != null && beneficiarios.Count > 0)
+                {
+                    model.Beneficiarios = beneficiarios;
+                }
             }
 
             return View(model);
@@ -183,6 +191,16 @@ namespace WebAtividadeEntrevista.Controllers
             {
                 return Json(new { Result = "ERROR", Message = ex.Message });
             }
+        }
+
+        [HttpPost]
+        public JsonResult ValidarCPF(string cpf)
+        {
+            BoCliente bo = new BoCliente();
+
+            cpf = bo.RemoverMascaraCpf(cpf);
+
+            return Json(bo.VerificarSeCpfValido(cpf));
         }
     }
 }

@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
 namespace FI.AtividadeEntrevista.BLL
 {
@@ -16,7 +13,20 @@ namespace FI.AtividadeEntrevista.BLL
         public long Incluir(DML.Cliente cliente)
         {
             DAL.DaoCliente cli = new DAL.DaoCliente();
-            return cli.Incluir(cliente);
+            DAL.DaoBeneficiario daoBeneficiario = new DAL.DaoBeneficiario();
+
+            long idCliente = cli.Incluir(cliente);
+
+            if (cliente.Beneficiarios != null)
+            {
+                foreach (var beneficiario in cliente.Beneficiarios)
+                {
+                    beneficiario.IdCliente = idCliente;
+                    daoBeneficiario.Incluir(beneficiario);
+                }
+            }
+
+            return idCliente;
         }
 
         /// <summary>
@@ -26,7 +36,28 @@ namespace FI.AtividadeEntrevista.BLL
         public void Alterar(DML.Cliente cliente)
         {
             DAL.DaoCliente cli = new DAL.DaoCliente();
+            DAL.DaoBeneficiario daoBeneficiario = new DAL.DaoBeneficiario();
+
             cli.Alterar(cliente);
+
+            List<DML.Beneficiario> beneficiariosCliente = daoBeneficiario.ListarBeneficiariosCliente(cliente.Id);
+
+            foreach (var beneficiario in beneficiariosCliente)
+            {
+                daoBeneficiario.Excluir(beneficiario.Id);
+            }
+
+            long idCliente = cliente.Id;
+
+            if (cliente.Beneficiarios != null)
+            {
+                foreach (var beneficiario in cliente.Beneficiarios)
+                {
+                    beneficiario.IdCliente = idCliente;
+                    beneficiario.CPF = RemoverMascaraCpf(beneficiario.CPF);
+                    daoBeneficiario.Incluir(beneficiario);
+                }
+            }
         }
 
         /// <summary>
@@ -95,14 +126,8 @@ namespace FI.AtividadeEntrevista.BLL
         /// </summary>
         public bool VerificarSeCpfValido(string cpf)
         {
-            // Verifique se todos os dígitos são iguais; nesse caso, é inválido
-            //if (cpf.Distinct().Count() == 1)
-            //{
-            //    return false;
-            //}
-
-            // Verifique se todos os dígitos são iguais; nesse caso, é inválido
-            if (cpf.All(d => d == cpf[0]))
+            // Verifique se todos os dígitos são iguais ou se possui todos os dígitos; nesse caso, é inválido
+            if (cpf.All(d => d == cpf[0]) || cpf.Count() != 11)
             {
                 return false;
             }
